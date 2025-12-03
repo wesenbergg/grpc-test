@@ -2,6 +2,9 @@
 
 A simple example of two Python programs communicating via gRPC.
 
+<img width="1704" height="1037" alt="image" src="https://github.com/user-attachments/assets/95f0b9de-8e82-43f6-862a-60001859a120" />
+
+
 ## Setup
 
 1. Install dependencies:
