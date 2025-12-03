@@ -8,8 +8,14 @@ from concurrent import futures
 import time
 from pysyncobj import SyncObj, replicated
 
-import pingpong_pb2
-import pingpong_pb2_grpc
+import sys
+from pathlib import Path
+# Add parent directory to path
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Now you can import from rpc folder
+from rpc import pingpong_pb2
+from rpc import pingpong_pb2_grpc
 
 
 class PingCounter(SyncObj):
