@@ -12,11 +12,52 @@ class ShowtimesServicer(showtimes_pb2_grpc.ShowtimesServicer):
         self.node_address_map = node_address_map  # Map of raft_address -> grpc_address
     
     def GetShowtime(self, request, context):
-        return showtimes_pb2.GetShowtimeResponse(showtime=self.showtimes.get_showtime(request.showtime_id))
+        showtime_data = self.showtimes.get_showtime(request.showtime_id)
+        
+        if showtime_data is None:
+            return showtimes_pb2.GetShowtimeResponse(found=False)
+        
+        # Create Reservation objects for each reserved seat
+        reserved_seats = {}
+        for seat, reservation_data in showtime_data.get('reserved_seats', {}).items():
+            reserved_seats[seat] = showtimes_pb2.Reservation(
+                user=reservation_data.get('user', '')
+            )
+        
+        # Create Showtime object
+        showtime = showtimes_pb2.Showtime(
+            reserved_seats=reserved_seats,
+            movie_id=showtime_data.get('movie_id', 0),
+            theater_id=showtime_data.get('theater_id', 0),
+            time=showtime_data.get('time', ''),
+            price=showtime_data.get('price', 0.0)
+        )
+        
+        return showtimes_pb2.GetShowtimeResponse(showtime=showtime, found=True)
     
     def GetShowtimes(self, request, context):
         try:
-            return showtimes_pb2.GetShowtimesResponse(showtimes=self.showtimes.get_showtimes())
+            raw_showtimes = self.showtimes.get_showtimes()
+            proto_showtimes = {}
+            
+            for showtime_id, showtime_data in raw_showtimes.items():
+                # Create Reservation objects for each reserved seat
+                reserved_seats = {}
+                for seat, reservation_data in showtime_data.get('reserved_seats', {}).items():
+                    reserved_seats[seat] = showtimes_pb2.Reservation(
+                        user=reservation_data.get('user', '')
+                    )
+                
+                # Create Showtime object
+                proto_showtimes[showtime_id] = showtimes_pb2.Showtime(
+                    reserved_seats=reserved_seats,
+                    movie_id=showtime_data.get('movie_id', 0),
+                    theater_id=showtime_data.get('theater_id', 0),
+                    time=showtime_data.get('time', ''),
+                    price=showtime_data.get('price', 0.0)
+                )
+            
+            return showtimes_pb2.GetShowtimesResponse(showtimes=proto_showtimes)
         except Exception as e:
             print(f"Error in GetShowtimes: {str(e)}")
             return showtimes_pb2.GetShowtimesResponse(showtimes={})
