@@ -1,5 +1,5 @@
 import grpc
-from time import time
+from time import sleep
 
 from rpc import pingpong_pb2
 from rpc import pingpong_pb2_grpc
@@ -47,7 +47,7 @@ class PingPongServicer(pingpong_pb2_grpc.PingPongServicer):
         
         # This node is the leader - process the request
         self.counter._increment()
-        time.sleep(0.01)  # Allow replication to complete
+        sleep(0.01)  # Allow replication to complete
         count = self.counter.get_count()
         
         print(f"[LEADER] Received: {request.message} (Count: {count})")

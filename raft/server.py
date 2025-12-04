@@ -8,8 +8,10 @@ from concurrent import futures
 import time
 
 from raft.pingServicer import PingPongServicer
+from raft.showtimeServicer import ShowtimesServicer
 from raft.state import GlobalState
 from rpc import pingpong_pb2_grpc
+from rpc import showtimes_pb2_grpc
 
 
 def serve(raft_port=4321, grpc_port=50051, partner_addresses=None, node_map=None):
@@ -43,6 +45,10 @@ def serve(raft_port=4321, grpc_port=50051, partner_addresses=None, node_map=None
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     pingpong_pb2_grpc.add_PingPongServicer_to_server(
         PingPongServicer(globalState, node_map or {}), 
+        server
+    )
+    showtimes_pb2_grpc.add_ShowtimesServicer_to_server(
+        ShowtimesServicer(globalState, node_map or {}),
         server
     )
     
