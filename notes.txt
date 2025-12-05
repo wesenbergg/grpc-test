@@ -1,8 +1,8 @@
 # Terminal 1 - Node 1
-python server.py 50051 4321 localhost:4322:50052 localhost:4323:50053
+python -m server 50051 4321 localhost:4322:50052 localhost:4323:50053
 
 # Terminal 2 - Node 2  
-python server.py 50052 4322 localhost:4321:50051 localhost:4323:50053
+python -m server 50052 4322 localhost:4321:50051 localhost:4323:50053
 
 # Terminal 3 - Node 3
-python server.py 50053 4323 localhost:4321:50051 localhost:4322:50052
+python -m server 50053 4323 localhost:4321:50051 localhost:4322:50052
