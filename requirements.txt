@@ -3,3 +3,5 @@ grpcio-tools==1.60.0
 flask==3.0.0
 flask-cors==4.0.0
 pysyncobj==0.3.14
+pytest>=7.0.0
+pytest-mock>=3.10.0
