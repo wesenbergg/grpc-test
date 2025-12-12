@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package showtimes;
+
+// The showtimes service definition
+service Showtimes {
+  // Get all showtimes
+  rpc GetShowtimes (GetShowtimesRequest) returns (GetShowtimesResponse) {}
+  
+  // Get a specific showtime by ID
+  rpc GetShowtime (GetShowtimeRequest) returns (GetShowtimeResponse) {}
+  
+  // Add a new showtime
+  rpc AddShowtime (AddShowtimeRequest) returns (AddShowtimeResponse) {}
+  
+  // Reserve a seat in a showtime
+  rpc ReserveSeat (ReserveSeatRequest) returns (ReserveSeatResponse) {}
+  
+  // Cancel a seat reservation
+  rpc CancelReservation (CancelReservationRequest) returns (CancelReservationResponse) {}
+}
+
+// Messages for GetShowtimes
+message GetShowtimesRequest {}
+
+message GetShowtimesResponse {
+  map<string, Showtime> showtimes = 1;
+}
+
+// Messages for GetShowtime
+message GetShowtimeRequest {
+  string showtime_id = 1;
+}
+
+message GetShowtimeResponse {
+  Showtime showtime = 1;
+  bool found = 2;
+}
+
+// Messages for AddShowtime
+message AddShowtimeRequest {
+  int32 movie_id = 1;
+  int32 theater_id = 2;
+}
+
+message AddShowtimeResponse {
+  bool success = 1;
+  string showtime_id = 2;
+}
+
+// Messages for ReserveSeat
+message ReserveSeatRequest {
+  string showtime_id = 1;
+  string seat = 2;
+  string user = 3;
+}
+
+message ReserveSeatResponse {
+  bool success = 1;
+}
+
+// Messages for CancelReservation
+message CancelReservationRequest {
+  string showtime_id = 1;
+  string seat = 2;
+}
+
+message CancelReservationResponse {
+  bool success = 1;
+}
+
+// Showtime data structure
+message Showtime {
+  map<string, Reservation> reserved_seats = 1;
+  int32 movie_id = 2;
+  int32 theater_id = 3;
+  string time = 4;
+  double price = 5;
+}
+
+// Reservation data structure
+message Reservation {
+  string user = 1;
+}
